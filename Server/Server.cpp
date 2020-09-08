@@ -9,7 +9,6 @@ using namespace std;
 // Constants
 const int kBufferSize = 8 * 1024;
 
-
 // Prototypes
 SOCKET SetUpListener(const char* pcAddress, int nPort);
 SOCKET AcceptConnection(SOCKET ListeningSocket, sockaddr_in& sinRemote);

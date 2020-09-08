@@ -12,10 +12,9 @@ using namespace std;
 
 
 // Constants
-
 const int kBufferSize = 8 * 1024;
 
-// List of Winsock error constants mapped to an interpretation string.
+// winsockエラーのリスト
 static struct ErrorEntry {
   int nID;
   const char* pcMessage;
@@ -82,6 +81,7 @@ static struct ErrorEntry {
                    ErrorEntry(WSAHOST_NOT_FOUND,  "Host not found"),
                    ErrorEntry(WSANO_DATA,         "No host data of that type was found")
 };
+
 const int kNumMessages = sizeof(gaErrorList) / sizeof(ErrorEntry);
 
 const char* WSAGetLastErrorMessage(const char* pcMessagePrefix, int nErrorID /* = 0 */){
@@ -126,7 +126,7 @@ bool ShutdownConnection(SOCKET sd){
     }
   }
   
-  // Close the socket.
+  // ソケットを閉じる
   if (closesocket(sd) == SOCKET_ERROR) {
     return false;
   }

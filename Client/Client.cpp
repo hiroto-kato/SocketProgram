@@ -26,10 +26,10 @@ bool SendEcho(SOCKET sd);
 //int ReadReply(SOCKET sd);
 
 
-// winsock‚Å‚Ì’ÊMˆ—
+// winsockã§ã®é€šä¿¡å‡¦ç†
 int DoWinsock(const char* pcHost, int nPort)
 {
-  // Server‚ÌƒAƒhƒŒƒX‚ğ’T‚·
+  // Serverã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’æ¢ã™
   cout << "Looking up address..." << flush;
   u_long nRemoteAddress = LookupAddress(pcHost);
   if (nRemoteAddress == INADDR_NONE) {
@@ -40,7 +40,7 @@ int DoWinsock(const char* pcHost, int nPort)
   memcpy(&Address, &nRemoteAddress, sizeof(u_long));
   cout << inet_ntoa(Address) << ":" << nPort << endl;
   
-  // Server‚ÆÚ‘±
+  // Serverã¨æ¥ç¶š
   cout << "Connecting to remote host..." << flush;
   SOCKET sd = EstablishConnection(nRemoteAddress, htons(nPort));
   if (sd == INVALID_SOCKET) {
@@ -49,7 +49,7 @@ int DoWinsock(const char* pcHost, int nPort)
   }
   cout << "connected, socket " << sd << "." << endl;
   
-  // Server‚ÉƒpƒPƒbƒg‚ğ‘—‚é
+  // Serverã«ãƒ‘ã‚±ãƒƒãƒˆã‚’é€ã‚‹
   int nBytes;
   bool isSend = SendEcho(sd);
   if (isSend) {
@@ -69,7 +69,7 @@ int DoWinsock(const char* pcHost, int nPort)
   cout << endl;
 #endif
   
-  // Ø’f
+  // åˆ‡æ–­
   cout << "Shutting connection down..." << flush;
   if (ShutdownConnection(sd)) {
     cout << "Connection is down." << endl;
@@ -84,7 +84,7 @@ int DoWinsock(const char* pcHost, int nPort)
 }
 
 
-// ƒAƒhƒŒƒX‚ğ’T‚·
+// ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’æ¢ã™
 u_long LookupAddress(const char* pcHost)
 {
   u_long nRemoteAddr = inet_addr(pcHost);
@@ -100,10 +100,10 @@ u_long LookupAddress(const char* pcHost)
 }
 
 
-// Ú‘±Šm—§
+// æ¥ç¶šç¢ºç«‹
 SOCKET EstablishConnection(u_long nRemoteAddr, u_short nPort)
 {
-  // ƒ\ƒPƒbƒg‚Ìì¬
+  // ã‚½ã‚±ãƒƒãƒˆã®ä½œæˆ
   SOCKET sd = socket(AF_INET, SOCK_STREAM, 0);
   if (sd != INVALID_SOCKET) {
     sockaddr_in sinRemote;
@@ -120,7 +120,7 @@ SOCKET EstablishConnection(u_long nRemoteAddr, u_short nPort)
 }
 
 
-// ƒpƒPƒbƒg‚ğ‘—‚é
+// ãƒ‘ã‚±ãƒƒãƒˆã‚’é€ã‚‹
 bool SendEcho(SOCKET sd){
   char *kBuf = NULL;
   int currLen = 0;
@@ -137,7 +137,7 @@ bool SendEcho(SOCKET sd){
     time = static_cast<double>(clock() - start) / CLOCKS_PER_SEC;
   }while(time < seconds);
 
-  // ‘¬“x
+  // é€Ÿåº¦
   cout << time << " sec " << totalLen << " Bytes " << totalLen / time << " bps" << endl;
   return true;
 }

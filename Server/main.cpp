@@ -16,14 +16,14 @@ const int kDefaultServerPort = 4242;
 
 
 int main(int argc, char* argv[]){
-  // ˆø”Šm”Fˆ—
+  // å¼•æ•°ç¢ºèªå‡¦ç†
   if (argc < 2) {
     cerr << "usage: " << argv[0] << " <server-address> " << "[server-port]" << endl << endl;
     cerr << "\tIf you don't pass server-port, it defaults to " << kDefaultServerPort << "." << endl;
     return 1;
   }
   
-  // ƒzƒXƒg–¼æ“¾
+  // ãƒ›ã‚¹ãƒˆåå–å¾—
   const char* pcHost = argv[1];
   int nPort = kDefaultServerPort;
   if (argc >= 3) {

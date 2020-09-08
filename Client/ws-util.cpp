@@ -15,21 +15,21 @@ using namespace std;
 
 const int kBufferSize = 8 * 1024;
 
-// List of Winsock error constants mapped to an interpretation string.
+// winsockエラーのリスト
 static struct ErrorEntry {
-    int nID;
-    const char* pcMessage;
-
-    ErrorEntry(int id, const char* pc = 0) :
-        nID(id),
-        pcMessage(pc)
-    {
-    }
-
-    bool operator<(const ErrorEntry& rhs)
-    {
-        return nID < rhs.nID;
-    }
+  int nID;
+  const char* pcMessage;
+  
+  ErrorEntry(int id, const char* pc = 0) :
+    nID(id),
+    pcMessage(pc)
+  {
+  }
+  
+  bool operator<(const ErrorEntry& rhs)
+  {
+    return nID < rhs.nID;
+  }
 } gaErrorList[] = {
                    ErrorEntry(0,                  "No error"),
                    ErrorEntry(WSAEINTR,           "Interrupted system call"),
@@ -85,51 +85,51 @@ static struct ErrorEntry {
 const int kNumMessages = sizeof(gaErrorList) / sizeof(ErrorEntry);
 
 const char* WSAGetLastErrorMessage(const char* pcMessagePrefix, int nErrorID /* = 0 */) {
-    // Build basic error string
-    static char acErrorBuffer[256];
-    ostrstream outs(acErrorBuffer, sizeof(acErrorBuffer));
-    outs << pcMessagePrefix << ": ";
-
-    ErrorEntry* pEnd = gaErrorList + kNumMessages;
-    ErrorEntry Target(nErrorID ? nErrorID : WSAGetLastError());
-    ErrorEntry* it = lower_bound(gaErrorList, pEnd, Target);
-    if ((it != pEnd) && (it->nID == Target.nID)) {
-        outs << it->pcMessage;
-    }
-    else {
-        outs << "unknown error";
-    }
-    outs << " (" << Target.nID << ")";
-
-    outs << ends;
-    acErrorBuffer[sizeof(acErrorBuffer) - 1] = '\0';
-    return acErrorBuffer;
+  // Build basic error string
+  static char acErrorBuffer[256];
+  ostrstream outs(acErrorBuffer, sizeof(acErrorBuffer));
+  outs << pcMessagePrefix << ": ";
+  
+  ErrorEntry* pEnd = gaErrorList + kNumMessages;
+  ErrorEntry Target(nErrorID ? nErrorID : WSAGetLastError());
+  ErrorEntry* it = lower_bound(gaErrorList, pEnd, Target);
+  if ((it != pEnd) && (it->nID == Target.nID)) {
+    outs << it->pcMessage;
+  }
+  else {
+    outs << "unknown error";
+  }
+  outs << " (" << Target.nID << ")";
+  
+  outs << ends;
+  acErrorBuffer[sizeof(acErrorBuffer) - 1] = '\0';
+  return acErrorBuffer;
 }
 
 bool ShutdownConnection(SOCKET sd) {
-    if (shutdown(sd, SD_SEND) == SOCKET_ERROR) {
-        return false;
+  if (shutdown(sd, SD_SEND) == SOCKET_ERROR) {
+    return false;
+  }
+  char acReadBuffer[kBufferSize];
+  while (1) {
+    int nNewBytes = recv(sd, acReadBuffer, kBufferSize, 0);
+    if (nNewBytes == SOCKET_ERROR) {
+      return false;
     }
-    char acReadBuffer[kBufferSize];
-    while (1) {
-        int nNewBytes = recv(sd, acReadBuffer, kBufferSize, 0);
-        if (nNewBytes == SOCKET_ERROR) {
-            return false;
-        }
-        else if (nNewBytes != 0) {
-            cerr << endl << "FYI, received " << nNewBytes <<
-                " unexpected bytes during shutdown." << endl;
-        }
-        else {
-            // Okay, we're done!
-            break;
-        }
+    else if (nNewBytes != 0) {
+      cerr << endl << "FYI, received " << nNewBytes <<
+        " unexpected bytes during shutdown." << endl;
     }
-
-    // Close the socket.
-    if (closesocket(sd) == SOCKET_ERROR) {
-        return false;
+    else {
+      // Okay, we're done!
+      break;
     }
-
-    return true;
+  }
+  
+  // ソケットを閉じる
+  if (closesocket(sd) == SOCKET_ERROR) {
+    return false;
+  }
+  
+  return true;
 }
